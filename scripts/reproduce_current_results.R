@@ -42,17 +42,17 @@ get_script_dir <- function() {
 
 script_dir <- get_script_dir()
 project_root <- normalizePath(file.path(script_dir, ".."), mustWork = FALSE)
-data_path <- file.path(project_root, "raw", "32020284", "POL-AXES data.csv")
+data_path <- file.path(script_dir, "POL-AXES data.csv")
 
 if (!file.exists(data_path)) {
   project_root <- normalizePath(getwd(), mustWork = FALSE)
-  data_path <- file.path(project_root, "raw", "32020284", "POL-AXES data.csv")
+  data_path <- file.path(project_root, "Scripts", "POL-AXES data.csv")
 }
 
 if (!file.exists(data_path)) {
   stop(
-    "Could not find raw/32020284/POL-AXES data.csv. ",
-    "Run this script from the TFM project root or keep it in scripts/.",
+    "Could not find TFM/Scripts/POL-AXES data.csv. ",
+    "Place the POL-AXES CSV in the Scripts folder and run this script from the TFM project folder.",
     call. = FALSE
   )
 }

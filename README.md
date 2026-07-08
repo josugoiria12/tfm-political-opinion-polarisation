@@ -14,13 +14,13 @@ scripts/reproduce_current_results.R
 
 ## Data availability
 
-The raw POL-AXES data file and source PDFs are not included in this repository. The scripts expect the data file at:
+The raw POL-AXES data file and source PDFs are not included in this repository. The script expects the data file at:
 
 ```text
-raw/32020284/POL-AXES data.csv
+TFM/Scripts/POL-AXES data.csv
 ```
 
-To reproduce the empirical outputs, place the POL-AXES CSV at that path and run the scripts from the project root.
+To reproduce the empirical outputs, place the POL-AXES CSV in the same folder as the reproduction script and run the script from the TFM project folder.
 
 ## Software
 
