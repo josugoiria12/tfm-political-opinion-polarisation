@@ -17,6 +17,12 @@ node_modules/
 raw/
 wiki/
 
+# Keep the public repository limited to the unified reproduction script.
+scripts/*
+!scripts/
+!scripts/reproduce_current_results.R
+thesis/
+
 # LaTeX build outputs
 *.aux
 *.bbl
