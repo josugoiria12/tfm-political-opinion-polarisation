@@ -1,0 +1,58 @@
+# Local runtime state
+.RData
+.Rhistory
+.Rproj.user/
+.obsidian/
+.agents/
+AGENTS.md
+tmp/
+__pycache__/
+*.pyc
+
+# Local dependencies and generated environments
+node_modules/
+.r-lib/
+
+# Source materials and licensed/input data
+raw/
+wiki/
+
+# LaTeX build outputs
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+
+# Generated documents, render checks, and bulky local outputs
+*.pdf
+*.zip
+*.bak*
+*.xlsx
+thesis/build*/
+thesis/layout-check-build/
+thesis/mixed18-followup-build/
+thesis/render*/
+thesis/render*.png
+thesis/rendered*/
+thesis/*_fig*_page_*.png
+thesis/*_preview-*.png
+thesis/main_fig*_page_*.png
+thesis/results/**/*.csv
+thesis/results/**/*.txt
+thesis/results/**/*.log
+thesis/results/**/*.ps1
+thesis/results/**/compiled/
+
+# Keep thesis source and final figures, but not temporary presentation output
+thesis/presentation_june5/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
