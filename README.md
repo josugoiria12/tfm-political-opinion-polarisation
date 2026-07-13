@@ -2,7 +2,7 @@
 
 This repository contains the unified reproduction code for a Master's thesis on measuring political opinion polarisation from ordinal survey data in Spain, the United Kingdom, and Germany.
 
-The empirical workflow estimates latent political-opinion scores from the POL-AXES survey and applies Duclos-Esteban-Ray-style polarisation summaries to the resulting score distributions. The main reproducibility script is:
+The empirical workflow estimates latent political-opinion scores from the POL-AXES survey and applies Duclos-Esteban-Ray-style polarisation summaries to the resulting score distributions. Kernel density estimation uses the alpha-specific Duclos bandwidth rule, `h_alpha = 4.7 * n^(-1/5) * sigma * alpha^(1/5)`. The main reproducibility script is:
 
 ```text
 scripts/reproduce_current_results.R

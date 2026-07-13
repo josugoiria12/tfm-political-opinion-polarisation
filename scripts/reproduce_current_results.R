@@ -238,17 +238,21 @@ weighted_var <- function(x, w) {
   sum(w * (x - mu)^2) / sum(w)
 }
 
-silverman_bw <- function(x) {
-  x <- x[!is.na(x)]
-  n <- length(x)
-  scale <- min(sd(x), IQR(x) / 1.34)
-  if (is.na(scale) || scale <= 0) {
-    scale <- sd(x)
+duclos_bw <- function(x, alpha, w = NULL) {
+  keep <- !is.na(x)
+  if (!is.null(w)) {
+    keep <- keep & !is.na(w) & w > 0
   }
-  0.9 * scale * n^(-1 / 5)
+  x <- x[keep]
+  n <- length(x)
+  if (n < 2 || alpha <= 0) {
+    return(NA_real_)
+  }
+  sigma <- if (is.null(w)) sd(x) else sqrt(weighted_var(x, w[keep]))
+  4.7 * n^(-1 / 5) * sigma * alpha^(1 / 5)
 }
 
-weighted_kde <- function(x, w = NULL, bw_multiplier = 1, n_grid = 512) {
+weighted_kde <- function(x, w = NULL, alpha = 0.50, bw_multiplier = 1, n_grid = 512) {
   keep_x <- !is.na(x)
   x <- x[keep_x]
 
@@ -262,7 +266,10 @@ weighted_kde <- function(x, w = NULL, bw_multiplier = 1, n_grid = 512) {
   x <- x[keep_w]
   w <- w[keep_w] / sum(w[keep_w])
 
-  bw <- silverman_bw(x) * bw_multiplier
+  bw <- duclos_bw(x, alpha, w) * bw_multiplier
+  if (is.na(bw) || bw <= 0) {
+    stop("The Duclos bandwidth could not be computed.", call. = FALSE)
+  }
   x_range <- range(x)
   padding <- 3 * bw
   grid <- seq(x_range[1] - padding, x_range[2] + padding, length.out = n_grid)
@@ -302,8 +309,9 @@ for (country_name in unique(scores_all$country)) {
   for (factor_name in factors) {
     x <- country_data[[factor_name]]
     w <- country_data$weight
-    kde_unweighted <- weighted_kde(x)
-    kde_weighted <- weighted_kde(x, w)
+    # Alpha 0.50 is the reference density saved for plots and mode counts.
+    kde_unweighted <- weighted_kde(x, alpha = 0.50)
+    kde_weighted <- weighted_kde(x, w, alpha = 0.50)
 
     base_row <- data.frame(
       country = country_name,
@@ -330,8 +338,10 @@ for (country_name in unique(scores_all$country)) {
 
     for (alpha in alphas) {
       alpha_key <- gsub("\\.", "_", as.character(alpha))
-      base_row[[paste0("der_alpha_", alpha_key)]] <- der_index(kde_unweighted, alpha)
-      base_row[[paste0("weighted_der_alpha_", alpha_key)]] <- der_index(kde_weighted, alpha)
+      alpha_kde_unweighted <- weighted_kde(x, alpha = alpha)
+      alpha_kde_weighted <- weighted_kde(x, w, alpha = alpha)
+      base_row[[paste0("der_alpha_", alpha_key)]] <- der_index(alpha_kde_unweighted, alpha)
+      base_row[[paste0("weighted_der_alpha_", alpha_key)]] <- der_index(alpha_kde_weighted, alpha)
     }
 
     polarization_rows[[length(polarization_rows) + 1]] <- base_row
@@ -387,13 +397,13 @@ for (country_name in unique(scores_all$country)) {
 
     for (bw_multiplier in bandwidth_multipliers) {
       for (weighted in c(FALSE, TRUE)) {
-        kde <- if (weighted) {
-          weighted_kde(x, w, bw_multiplier = bw_multiplier)
-        } else {
-          weighted_kde(x, bw_multiplier = bw_multiplier)
-        }
-
         for (alpha in alphas) {
+          kde <- if (weighted) {
+            weighted_kde(x, w, alpha = alpha, bw_multiplier = bw_multiplier)
+          } else {
+            weighted_kde(x, alpha = alpha, bw_multiplier = bw_multiplier)
+          }
+
           sensitivity_rows[[length(sensitivity_rows) + 1]] <- data.frame(
             country = country_name,
             factor = factor_name,
