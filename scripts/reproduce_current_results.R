@@ -126,7 +126,7 @@ for (country_name in levels(analysis_data$country_label)) {
     data = country_data,
     ordered = model_items,
     estimator = "WLSMV",
-    parameterization = "theta",
+    parameterization = "delta",
     std.lv = TRUE
   )
 
